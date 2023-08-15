@@ -1,0 +1,69 @@
+#!/bin/sh
+
+#
+# Run mosh with a bad server command, check that it reports this usefully.
+#
+
+# shellcheck source=e2e-test-subrs
+. "$(dirname "$0")/e2e-test-subrs"
+PATH=$PATH:.:$srcdir
+# Top-level wrapper.
+if [ $# -eq 0 ]; then
+    e2e-test "$0" baseline client server mosh-args post
+    exit
+fi
+
+# OK, we have arguments, we're one of the test hooks.
+if [ $# -lt 1 ]; then
+    fail "bad arguments %s\n" "$@"
+fi
+
+# The mosh session test command is never run.
+baseline()
+{
+    printf "@@@ done\n"
+}
+
+# Return inverted exitstatus from mosh-client.
+client()
+{
+    ! "$@"
+    exit
+}
+
+# Add a do-nothing server command, to disable the standard harness
+# checks in e2e-test.
+server()
+{
+    exit 0
+}
+
+# Make mosh.pl fail with a bad server.
+mosh_args()
+{
+    printf "%s\n" "--server false"
+}
+
+# Check for correct reporting of that failure.
+post()
+{
+    if ! grep 'server command failed with exitstatus' "$(basename "$0").d/baseline.tmux.log"; then
+	exit 1
+    fi
+}
+
+case $1 in
+    baseline)
+	baseline;;
+    client)
+	shift
+	client "$@";;
+    mosh-args)
+	mosh_args;;
+    post)
+	post;;
+    server)
+	server;;
+    *)
+	fail "unknown test argument %s\n" "$1";;
+esac

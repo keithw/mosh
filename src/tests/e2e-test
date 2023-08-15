@@ -237,21 +237,21 @@ for run in $server_tests; do
 	if [ "$server_rv" -ne 0 ]; then
 	    test_error "server harness exited with status %s\n" "$server_rv"
 	fi
-    fi
-    if [ "${run}" != "direct" ]; then
-	# Check for "round-trip" failures
-	if grep -q "round-trip Instruction verification failed" "${test_dir}/${run}.server.stderr"; then
-	    test_error "Round-trip Instruction verification failed on server during %s\n" "$run"
-	fi
-	# Check for 0-timeout select() issue
-	if egrep -q "(polls, rate limiting|consecutive polls)" "${test_dir}/${run}.server.stderr"; then
-	    if [ "osx" != "${TRAVIS_OS_NAME}" ]; then
-		test_error "select() with zero timeout called too often on server during %s\n" "$run"
+	if [ "${run}" != "direct" ]; then
+	    # Check for "round-trip" failures
+	    if grep -q "round-trip Instruction verification failed" "${test_dir}/${run}.server.stderr"; then
+		test_error "Round-trip Instruction verification failed on server during %s\n" "$run"
 	    fi
-	fi
-	# Check for assert()
-	if egrep -q "assertion.*failed" "${test_dir}/${run}.server.stderr"; then
-	    test_error "assertion during %s\n" "$run"
+	    # Check for 0-timeout select() issue
+	    if egrep -q "(polls, rate limiting|consecutive polls)" "${test_dir}/${run}.server.stderr"; then
+		if [ "osx" != "${TRAVIS_OS_NAME}" ]; then
+		    test_error "select() with zero timeout called too often on server during %s\n" "$run"
+		fi
+	    fi
+	    # Check for assert()
+	    if egrep -q "assertion.*failed" "${test_dir}/${run}.server.stderr"; then
+		test_error "assertion during %s\n" "$run"
+	    fi
 	fi
     fi
     # XXX We'd also like to check for "target state Instruction
