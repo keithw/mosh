@@ -362,6 +362,17 @@ Connection::Connection( const char* key_str, const char* ip, const char* port ) 
   socks.push_back( Socket( remote_addr.sa.sa_family ) );
 
   set_MTU( remote_addr.sa.sa_family );
+  Socket socket = Socket( remote_addr.sa.sa_family );
+  struct sockaddr_in sin;
+  memset(&sin, 0, sizeof sin);
+  sin.sin_family = AF_INET;
+  sin.sin_addr.s_addr = htonl(INADDR_ANY);
+  int sport = 0;
+  char *env_sport = getenv( "MOSH_SPORT" );
+  if (env_sport != NULL) sport = atoi(env_sport);
+  sin.sin_port = htons(sport);
+  bind(socket.fd(), (struct sockaddr *)&sin, sizeof(sin));
+  socks.push_back(socket);
 }
 
 void Connection::send( const std::string& s )
