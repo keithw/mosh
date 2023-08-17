@@ -38,6 +38,7 @@
 #include <unistd.h>
 
 #include "src/terminal/terminal.h"
+#include "src/util/char_utils.h"
 
 using namespace Terminal;
 
@@ -65,7 +66,7 @@ void Emulator::print( const Parser::Print* act )
    * Check for printing ISO 8859-1 first, it's a cheap way to detect
    * some common narrow characters.
    */
-  const int chwidth = ch == L'\0' ? -1 : ( Cell::isprint_iso8859_1( ch ) ? 1 : wcwidth( ch ) );
+  const int chwidth = ch == L'\0' ? -1 : ( Cell::isprint_iso8859_1( ch ) ? 1 : mosh_wcwidth( ch ) );
 
   Cell* this_cell = fb.get_mutable_cell();
 

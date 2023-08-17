@@ -37,6 +37,7 @@
 #include <typeinfo>
 
 #include "src/frontend/terminaloverlay.h"
+#include "src/util/char_utils.h"
 
 using namespace Overlay;
 
@@ -257,7 +258,7 @@ void NotificationEngine::apply( Framebuffer& fb ) const
     }
 
     wchar_t ch = *i;
-    int chwidth = ch == L'\0' ? -1 : wcwidth( ch );
+    int chwidth = ch == L'\0' ? -1 : mosh_wcwidth( ch );
     Cell* this_cell = 0;
 
     switch ( chwidth ) {
@@ -709,7 +710,7 @@ void PredictionEngine::new_user_byte( char the_byte, const Framebuffer& fb )
             }
           }
         }
-      } else if ( ( ch < 0x20 ) || ( wcwidth( ch ) != 1 ) ) {
+      } else if ( ( ch < 0x20 ) || ( mosh_wcwidth( ch ) != 1 ) ) {
         /* unknown print */
         become_tentative();
         //	fprintf( stderr, "Unknown print 0x%x\n", ch );
