@@ -45,6 +45,7 @@ public:
   int cursor_x, cursor_y;
   Renditions current_rendition;
   bool cursor_visible;
+  int cursor_style;
 
   const Framebuffer& last_frame;
 

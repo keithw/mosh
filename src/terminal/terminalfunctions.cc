@@ -51,6 +51,27 @@ static void clearline( Framebuffer* fb, int row, int start, int end )
   }
 }
 
+/* cursor style */
+static void CSI_DECSCUSR( Framebuffer* fb, Dispatcher* dispatch )
+{
+  int style = dispatch->getparam( 0, 0 );
+  switch ( style ) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+      fb->ds.cursor_style = style;
+      break;
+    default:
+      break;
+  }
+}
+
+static Function func_CSI_DECSCUSR( CSI, " q", CSI_DECSCUSR );
+
 /* erase in line */
 static void CSI_EL( Framebuffer* fb, Dispatcher* dispatch )
 {

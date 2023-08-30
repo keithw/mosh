@@ -45,7 +45,20 @@
 /* Terminal framebuffer */
 
 namespace Terminal {
+using std::make_shared;
+using std::shared_ptr;
 using color_type = uint32_t;
+
+enum CursorStyle
+{
+  BLINKING_BLOCK = 0,
+  BLINKING_BLOCK_DEFAULT = 1,
+  STEADY_BLOCK = 2,
+  BLINKING_UNDERLINE = 3,
+  STEADY_UNDERLINE = 4,
+  BLINKING_BAR = 5,
+  STEADY_BAR = 6,
+};
 
 class Renditions
 {
@@ -275,6 +288,7 @@ private:
   SavedCursor save;
 
 public:
+  int cursor_style;
   bool next_print_will_wrap;
   bool origin_mode;
   bool auto_wrap_mode;
@@ -353,8 +367,9 @@ public:
     return ( width == x.width ) && ( height == x.height ) && ( cursor_col == x.cursor_col )
            && ( cursor_row == x.cursor_row ) && ( cursor_visible == x.cursor_visible )
            && ( reverse_video == x.reverse_video ) && ( renditions == x.renditions )
-           && ( bracketed_paste == x.bracketed_paste ) && ( mouse_reporting_mode == x.mouse_reporting_mode )
-           && ( mouse_focus_event == x.mouse_focus_event ) && ( mouse_alternate_scroll == x.mouse_alternate_scroll )
+           && ( cursor_style == x.cursor_style ) && ( bracketed_paste == x.bracketed_paste )
+           && ( mouse_reporting_mode == x.mouse_reporting_mode ) && ( mouse_focus_event == x.mouse_focus_event )
+           && ( mouse_alternate_scroll == x.mouse_alternate_scroll )
            && ( mouse_encoding_mode == x.mouse_encoding_mode );
   }
 };

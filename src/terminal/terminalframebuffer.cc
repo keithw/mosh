@@ -62,10 +62,11 @@ void DrawState::reinitialize_tabs( unsigned int start )
 DrawState::DrawState( int s_width, int s_height )
   : width( s_width ), height( s_height ), cursor_col( 0 ), cursor_row( 0 ), combining_char_col( 0 ),
     combining_char_row( 0 ), default_tabs( true ), tabs( s_width ), scrolling_region_top_row( 0 ),
-    scrolling_region_bottom_row( height - 1 ), renditions( 0 ), save(), next_print_will_wrap( false ),
-    origin_mode( false ), auto_wrap_mode( true ), insert_mode( false ), cursor_visible( true ),
-    reverse_video( false ), bracketed_paste( false ), mouse_reporting_mode( MOUSE_REPORTING_NONE ),
-    mouse_focus_event( false ), mouse_alternate_scroll( false ), mouse_encoding_mode( MOUSE_ENCODING_DEFAULT ),
+    scrolling_region_bottom_row( height - 1 ), renditions( 0 ), save(),
+    cursor_style( Terminal::CursorStyle::BLINKING_BLOCK ), next_print_will_wrap( false ), origin_mode( false ),
+    auto_wrap_mode( true ), insert_mode( false ), cursor_visible( true ), reverse_video( false ),
+    bracketed_paste( false ), mouse_reporting_mode( MOUSE_REPORTING_NONE ), mouse_focus_event( false ),
+    mouse_alternate_scroll( false ), mouse_encoding_mode( MOUSE_ENCODING_DEFAULT ),
     application_mode_cursor_keys( false )
 {
   reinitialize_tabs( 0 );
@@ -387,6 +388,7 @@ void Framebuffer::soft_reset( void )
   ds.insert_mode = false;
   ds.origin_mode = false;
   ds.cursor_visible = true; /* per xterm and gnome-terminal */
+  ds.cursor_style = Terminal::CursorStyle::BLINKING_BLOCK;
   ds.application_mode_cursor_keys = false;
   ds.set_scrolling_region( 0, ds.get_height() - 1 );
   ds.add_rendition( 0 );
