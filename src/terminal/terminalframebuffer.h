@@ -385,6 +385,7 @@ private:
   title_type clipboard;
   unsigned int bell_count;
   bool title_initialized; /* true if the window title has been set via an OSC */
+  uint8_t clipboard_seqnum;
 
   row_pointer newrow( void )
   {
@@ -461,7 +462,13 @@ public:
   bool is_title_initialized( void ) const { return title_initialized; }
   void set_icon_name( const title_type& s ) { icon_name = s; }
   void set_window_title( const title_type& s ) { window_title = s; }
-  void set_clipboard( const title_type& s ) { clipboard = s; }
+  void set_clipboard( const title_type& s )
+  {
+    clipboard = s;
+    // Rolling over 255 -> 0 is okay
+    clipboard_seqnum++;
+  }
+  uint8_t get_clipboard_seqnum ( void ) const { return clipboard_seqnum; }
   const title_type& get_icon_name( void ) const { return icon_name; }
   const title_type& get_window_title( void ) const { return window_title; }
   const title_type& get_clipboard( void ) const { return clipboard; }
@@ -479,7 +486,7 @@ public:
   bool operator==( const Framebuffer& x ) const
   {
     return ( rows == x.rows ) && ( window_title == x.window_title ) && ( clipboard == x.clipboard )
-           && ( bell_count == x.bell_count ) && ( ds == x.ds );
+           && ( clipboard_seqnum == x.clipboard_seqnum ) && ( bell_count == x.bell_count ) && ( ds == x.ds );
   }
 };
 }
