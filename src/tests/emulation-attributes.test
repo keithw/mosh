@@ -15,13 +15,13 @@
 . "$(dirname "$0")/e2e-test-subrs"
 PATH=$PATH:.:$srcdir
 # Need 2.3 for true-color support (2.2 may work also)
-if [ "$(basename "$0")" = emulation-attributes-truecolor.test ] &&
+if [ "$(basename "$0")" = "emulation-attributes-truecolor.test" ] &&
    ! tmux_check 2 3; then
     printf "tmux does not support true color\n" >&2
     exit 77
 fi
 # Need 2.4 for BCE support
-if [ "$(basename "$0")" = emulation-attributes-bce.test ] &&
+if [ "$(basename "$0")" = "emulation-attributes-bce.test" ] &&
    ! tmux_check 2 4; then
     printf "tmux does not support BCE\n" >&2
     exit 77
@@ -36,20 +36,20 @@ if [ "$(basename "$0")" = emulation-attributes-bce.test ] &&
 fi
 
 # Top-level wrapper.
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     e2e-test "$0" baseline direct verify
     exit
 fi
 
 # OK, we have arguments, we're one of the test hooks.
-if [ $# -ne 1 ]; then
+if [ "$#" -ne 1 ]; then
     fail "bad arguments %s\n" "$@"
 fi
 
 test_true_color()
 {
     s=$(printf "\033[0")
-    for i in $@; do
+    for i in "$@"; do
         s="$s;$i"
     done
     s="${s}m"
@@ -58,7 +58,7 @@ test_true_color()
         r=$((255-(attr*255/76)))
         g=$((attr*510/76))
         b=$((attr*255/76))
-        if [ $g -gt 255 ]; then
+        if [ "$g" -gt 255 ]; then
             g=$((510-g))
         fi
         invr=$((255-r))
@@ -67,8 +67,8 @@ test_true_color()
         c="E"
 
         printf "%s" "$s"
-        printf "\033[48;2;%d;%d;%dm" $r $g $b;
-        printf "\033[38;2;%d;%d;%dm" $invr $invg $invb
+        printf "\033[48;2;%d;%d;%dm" "$r" "$g" "$b";
+        printf "\033[38;2;%d;%d;%dm" "$invr" "$invg" "$invb"
         printf "%s\033[m" "$c"
     done
     printf "\n"
@@ -88,7 +88,7 @@ baseline()
 	# Traditional ancient VT100 attributes.
 	vt100)
 	    for attr in 0 1 4 5 7; do
-		printf '\033[%dmE\033[m ' $attr
+		printf '\033[%dmE\033[m ' "$attr"
 	    done
 	    ;;
 	# 16-color attributes.

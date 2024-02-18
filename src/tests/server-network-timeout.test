@@ -18,7 +18,7 @@ TIMEOUT=10
 . "$(dirname "$0")/e2e-test-subrs"
 PATH=$PATH:.:$srcdir
 # Top-level wrapper.
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     e2e-test "$0" client baseline
     exit
 fi
@@ -48,11 +48,11 @@ client()
 	    fail "mosh-client had a normal exit\n";; # test condition failed
 	9|137|265)
 	    # Aha, signal 9.  Wait.
-	    sleep $(( TIMEOUT + 12 ))
+	    sleep "$(( TIMEOUT + 12 ))"
 	    exit 0
 	    ;;
 	*)
-	    fail "unknown client wrapper failure, retval=%d\n" $retval
+	    fail "unknown client wrapper failure, retval=%d\n" "$retval"
 	    ;;
     esac
     fail "client wrapper shouldnt get here\n"
@@ -82,11 +82,11 @@ baseline()
     case "$myname" in
 	server-network-timeout)
 	    # Just wait.  This is the hardest part.
-	    sleep $(( TIMEOUT + 7 ))
+	    sleep "$(( TIMEOUT + 7 ))"
 	    ;;
 	server-signal-timeout)
 	    # Wait for the timeout to expire.
-	    sleep $(( TIMEOUT + 2 ))
+	    sleep "$(( TIMEOUT + 2 ))"
 	    # Tell the server to go away.
 	    kill -USR1 "$MOSH_SERVER_PID"
 	    sleep 5

@@ -22,7 +22,7 @@ dump_logs()
     dir=$1
     shift
     testname=$(basename "$dir" .d)
-    for logfile in $dir/*.tmux.log; do
+    for logfile in "$dir"/*.tmux.log; do
 	printf "travis_fold:start:%s-%s\n" "$testname" "$(basename "$logfile")"
 	cat "$logfile"
 	printf "travis_fold:end:%s-%s\n" "$testname" "$(basename "$logfile")"
@@ -60,7 +60,7 @@ test_exitstatus()
 ssh_localhost_check()
 {
     ssh localhost :
-    if [ $? -ne 0 ]; then
+    if [ "$?" -ne 0 ]; then
 	error "ssh to localhost failed\n"
 	return 1
     fi
@@ -93,7 +93,7 @@ if [ -z "$srcdir" ]; then
     export srcdir=$PWD
 else
     srcdir="$(cd "$srcdir" && pwd)"
-    if [ $? -ne 0 ]; then
+    if [ "$?" -ne 0 ]; then
 	error "can't cd to srcdir: %s\n" "$srcdir"
 	exit 99
     fi
@@ -113,7 +113,7 @@ case "$(basename "$0")" in
 	;;
 esac
 
-if [ $# -lt 2 ]; then
+if [ "$#" -lt 2 ]; then
     test_error "not enough args\n"
 fi
 
@@ -144,10 +144,10 @@ mkdir "${test_dir}"
 
 on_exit() {
     rv=$?
-    if test $rv -ne 0; then
+    if test "$rv" -ne 0; then
 	dump_logs "$test_dir" $test_args
     fi
-    exit $rv
+    exit "$rv"
 }
 trap on_exit EXIT
 
@@ -219,7 +219,7 @@ for run in $server_tests; do
     ${tmux_stdin} tmux -f /dev/null -S "${tmux_socket}" -C new-session -x 80 -y 24 "${srcdir}/print-exitstatus ${client_wrapper} ${sut} ${server_wrapper} \"${PWD}/${test_dir}/${run}\" \"${PWD}/${test_script} ${run}\"" > "${test_dir}/${run}.tmux.log"
     rv=$?
     rm -f "${tmux_socket}" "${test_dir}/tmux-socket"
-    if [ $rv -ne 0 ]; then
+    if [ "$rv" -ne 0 ]; then
 	test_error "tmux failure on test %s\n" "$run"
     fi
     # Check for mosh failures
@@ -244,13 +244,13 @@ for run in $server_tests; do
 	    test_error "Round-trip Instruction verification failed on server during %s\n" "$run"
 	fi
 	# Check for 0-timeout select() issue
-	if egrep -q "(polls, rate limiting|consecutive polls)" "${test_dir}/${run}.server.stderr"; then
+	if grep -E -q "(polls, rate limiting|consecutive polls)" "${test_dir}/${run}.server.stderr"; then
 	    if [ "osx" != "${TRAVIS_OS_NAME}" ]; then
 		test_error "select() with zero timeout called too often on server during %s\n" "$run"
 	    fi
 	fi
 	# Check for assert()
-	if egrep -q "assertion.*failed" "${test_dir}/${run}.server.stderr"; then
+	if grep -E -q "assertion.*failed" "${test_dir}/${run}.server.stderr"; then
 	    test_error "assertion during %s\n" "$run"
 	fi
     fi
@@ -282,7 +282,7 @@ for compare in $compare_tests; do
 	desired=n
 	badresult=different
     fi
-    if [ $differ != $desired ]; then
+    if [ "$differ" != "$desired" ]; then
 	test_failure "Output is %s between tests %s and %s\n" "$badresult" "$test1" "$test2"
     fi
 done
@@ -291,7 +291,7 @@ done
 if [ -n "$post" ]; then
     "${test_script}" post
     status=$?
-    if [ $status -ne 0 ]; then
-	test_exitstatus $status "Post test failed with exitstatus %d\n" $status
+    if [ "$status" -ne 0 ]; then
+	test_exitstatus "$status" "Post test failed with exitstatus %d\n" "$status"
     fi
 fi

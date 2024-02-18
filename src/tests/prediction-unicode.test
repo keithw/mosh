@@ -29,7 +29,7 @@
 . "$(dirname "$0")/e2e-test-subrs"
 PATH=$PATH:.:$srcdir
 # Top-level wrapper.
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     e2e-test "$0" tmux baseline mosh-args post
     exit
 fi
@@ -76,10 +76,10 @@ post()
 	unset LC_ALL
 	unset LC_CTYPE
 	unset LANGUAGE
-	! env LANG=C egrep -q "%output %0 (\)|$(printf \\374))" "$(basename "$0").d/baseline.tmux.log"
+	! env LANG=C grep -E -q "%output %0 (\)|$(printf \\374))" "$(basename "$0").d/baseline.tmux.log"
 	# Implicit exitcode return.
     )
-    return $?
+    return "$?"
 }
 
 case $1 in

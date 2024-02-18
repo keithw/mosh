@@ -15,7 +15,7 @@
 PATH=$PATH:.:$srcdir
 
 # Top-level wrapper.
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     do_tmux=
     case $(basename "$0" .test) in
 	repeat-with-input)
@@ -28,15 +28,15 @@ fi
 # Run mosh repeatedly
 client()
 {
-    for i in $(seq 1 $REPEAT_TEST_LOOPCOUNT); do
-	(sleep 15; kill $$) &
+    for i in $(seq 1 "$REPEAT_TEST_LOOPCOUNT"); do
+	(sleep 15; kill "$$") &
 	killpid=$!
 	if ! "$@"; then
 	    printf "### iteration %d failed\n" "$i"
-	    kill $killpid
+	    kill "$killpid"
 	    exit 1
 	fi
-	kill $killpid
+	kill "$killpid"
     done
 }
 
@@ -69,7 +69,7 @@ baseline()
 
 post()
 {
-    if [ "$(grep -c "@@@ done" "$(basename "$0").d/baseline.tmux.log")" -lt $REPEAT_TEST_LOOPCOUNT ]; then
+    if [ "$(grep -c "@@@ done" "$(basename "$0").d/baseline.tmux.log")" -lt "$REPEAT_TEST_LOOPCOUNT" ]; then
 	exit 1
     fi
 }

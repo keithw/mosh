@@ -10,7 +10,7 @@
 . "$(dirname "$0")/e2e-test-subrs"
 PATH=$PATH:.:$srcdir
 # Top-level wrapper.
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     e2e-test "$0" tmux baseline
     exit
 fi

@@ -18,5 +18,5 @@ if out=$("$@" 2>&1); then
 else
   code=$?
   echo "$out"
-  exit $code
+  exit "$code"
 fi

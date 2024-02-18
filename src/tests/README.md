@@ -83,7 +83,7 @@ actions, which are expected to be identical.
 actions, which are expected to be different.
 
 `post` is a catchall script hook which allows custom verification
-acions to be coded.
+actions to be coded.
 
 ### Client wrappers
 

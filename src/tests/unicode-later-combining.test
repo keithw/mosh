@@ -18,13 +18,13 @@
 . "$(dirname "$0")/e2e-test-subrs"
 PATH=$PATH:.:$srcdir
 # Top-level wrapper.
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     e2e-test "$0" baseline post
     exit
 fi
 
 # OK, we have arguments, we're one of the test hooks.
-if [ $# -ne 1 ]; then
+if [ "$#" -ne 1 ]; then
     fail "bad arguments %s\n" "$@"
 fi
 

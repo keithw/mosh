@@ -17,11 +17,11 @@ wait_for_clients()
     expected=$1
     while true; do 
 	n=$(tmux list-clients -F . | wc -l)
-	if [ $expected -eq 1 ]; then
-	    if [ $n -eq 1 ]; then
+	if [ "$expected" -eq 1 ]; then
+	    if [ "$n" -eq 1 ]; then
 		return
 	    fi
-	elif [ $n -ne 1 ]; then
+	elif [ "$n" -ne 1 ]; then
 	    return
 	fi
 	sleep 1
@@ -30,7 +30,7 @@ wait_for_clients()
 
 export MOSH_SERVER_PID=$PPID
 
-if [ $# -lt 2 ]; then
+if [ "$#" -lt 2 ]; then
     printf "not enough args\n" >&2
     exit 99
 fi
@@ -40,8 +40,8 @@ rm -f "$testname.capture" "$testname.exitstatus"
 trap ":" TERM HUP QUIT # If the session closes on us, let the test we're running drive.
 on_exit() {
     rv=$?
-    echo $rv > "$testname.exitstatus"
-    exit $rv
+    echo "$rv" > "$testname.exitstatus"
+    exit "$rv"
 }
 trap on_exit EXIT
 # check for tmux
@@ -55,7 +55,7 @@ eval "$@"
 testret=$?
 # Capture mosh-server runtime if possible.
 runtime=$(ps -o time= $PPID 2>/dev/null)
-if [ $? -ne 0 ]; then # Cygwin...
+if [ "$?" -ne 0 ]; then # Cygwin...
     runtime=-
 fi
 # Wait for tmux client screen to become up to date.
@@ -63,14 +63,14 @@ sleep 1
 printf "@@@ server complete @@@" >&2
 wait_for_clients 1
 i=0
-while [ $i -lt 60 ]; do
+while [ "$i" -lt 60 ]; do
     if grep -q "@@@ server complete @@@" "$testname.tmux.log"; then
 	break
     fi
     i=$((i+1))
     sleep 1
 done
-if [ $i -ge 60 ]; then
+if [ "$i" -ge 60 ]; then
     printf "wait for tmux client update failed, erroring test\n" >&2
     exit 99
 fi
@@ -86,7 +86,7 @@ fi
 # Dump runtime into tmux log.
 printf "@@@ runtime %s @@@\n" "$runtime"
 # return useful exitstatus from harnessed command
-if [ $testret -ne 0 ]; then
+if [ "$testret" -ne 0 ]; then
     exit 1
 fi
 exit 0

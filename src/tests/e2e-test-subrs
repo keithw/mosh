@@ -23,7 +23,7 @@ sleepf()
 
 seq_function()
 {
-    if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+    if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
 	echo "bad args" >&2
     fi
     first=$1
@@ -108,7 +108,7 @@ tmux_check()
 	fi
     fi
     version=$(tmux -V)
-    if [ $? != 0 ]; then
+    if [ "$?" != 0 ]; then
 	error "tmux unavailable\n"
 	return 1
     fi
@@ -129,7 +129,7 @@ tmux_check()
     tmux_check_socket=$(mktemp -d /tmp/mosh-tmux-check.XXXXXXXX)
     tmux -f /dev/null -S "${tmux_check_socket}/s" -C new-session true
     rv=$?
-    rm ${tmux_check_socket}/s
-    rmdir ${tmux_check_socket}
-    return $rv
+    rm "${tmux_check_socket}/s"
+    rmdir "${tmux_check_socket}"
+    return "$rv"
 }

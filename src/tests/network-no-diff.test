@@ -9,13 +9,13 @@
 . "$(dirname "$0")/e2e-test-subrs"
 PATH=$PATH:.:$srcdir
 # Top-level wrapper.
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
     e2e-test "$0" baseline post
     exit
 fi
 
 # OK, we have arguments, we're one of the test hooks.
-if [ $# -ne 1 ]; then
+if [ "$#" -ne 1 ]; then
     fail "bad arguments %s\n" "$@"
 fi
 
@@ -23,7 +23,7 @@ baseline()
 {
     # Generate updates that don't change the screen
     i=0
-    while [ $i -lt 10 ] && printf 'x\b' && sleep 1; do
+    while [ "$i" -lt 10 ] && printf 'x\b' && sleep 1; do
 	i=$((i + 1))
     done
 }

@@ -128,7 +128,7 @@ if which -s pkgbuild; then
 		 --package-path . \
 		 "$OUTFILE"
     echo "Cleaning up..."
-    rm -rf $PKGID
+    rm -rf "$PKGID"
 else
     echo "Preprocessing package description..."
     INDIR=mosh-package.pmdoc.in
