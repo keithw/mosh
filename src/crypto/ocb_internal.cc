@@ -222,7 +222,7 @@
 	}
 #elif __ALTIVEC__ && _CALL_ELF != 2
     #include <altivec.h>
-    typedef vector unsigned block;
+    typedef __vector unsigned block;
     #define xor_block(x,y)         vec_xor(x,y)
     #define zero_block()           vec_splat_u32(0)
     #define unequal_blocks(x,y)    vec_any_ne(x,y)
