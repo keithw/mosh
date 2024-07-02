@@ -125,7 +125,7 @@ static void print_version( FILE* file )
 static void print_usage( FILE* stream, const char* argv0 )
 {
   fprintf( stream,
-           "Usage: %s new [-s] [-v] [-i LOCALADDR] [-p PORT[:PORT2]] [-c COLORS] [-l NAME=VALUE] [-- COMMAND...]\n",
+           "Usage: %s new [-s] [-u] [-v] [-i LOCALADDR] [-p PORT[:PORT2]] [-c COLORS] [-l NAME=VALUE] [-- COMMAND...]\n",
            argv0 );
 }
 
@@ -133,6 +133,7 @@ static bool print_motd( const char* filename );
 static void chdir_homedir( void );
 static bool motd_hushed( void );
 static void warn_unattached( const std::string& ignore_entry );
+static char utmp_entry[64] = { 0 };
 
 /* Simple spinloop */
 static void spin( void )
@@ -201,6 +202,11 @@ int main( int argc, char* argv[] )
     }
     if ( 0 == strcmp( argv[i], "--version" ) ) {
       print_version( stdout );
+      exit( 0 );
+    }
+    if ( 0 == strcmp( argv[i], "-u" ) ) {
+      snprintf( utmp_entry, 64, "mosh [%ld]", static_cast<long int>( getpid() ) );
+      warn_unattached( utmp_entry );
       exit( 0 );
     }
     if ( 0 == strcmp( argv[i], "--" ) ) { /* -- is mandatory */
@@ -513,7 +519,6 @@ static int run_server( const char* desired_ip,
     }
   }
 
-  char utmp_entry[64] = { 0 };
   snprintf( utmp_entry, 64, "mosh [%ld]", static_cast<long int>( getpid() ) );
 
   /* Fork child process */
