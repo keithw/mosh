@@ -361,6 +361,21 @@ Connection::Connection( const char* key_str, const char* ip, const char* port ) 
 
   socks.push_back( Socket( remote_addr.sa.sa_family ) );
 
+  /* Set user specified client source port. */
+  const char* mosh_client_port;
+  if ( ( mosh_client_port = getenv( "MOSH_CLIENT_PORT" ) ) != NULL ) {
+    struct sockaddr_in srcaddr;
+    memset( &srcaddr, 0, sizeof( srcaddr ) );
+    srcaddr.sin_family = AF_INET;
+    srcaddr.sin_addr.s_addr = htonl( INADDR_ANY );
+    srcaddr.sin_port = htons( std::stoi( mosh_client_port ) );
+
+    if ( bind( sock(), (struct sockaddr*)&srcaddr, sizeof( srcaddr ) ) < 0 ) {
+      perror( "Cannot bind port" );
+      throw NetworkException( "error" );
+    }
+  }
+
   set_MTU( remote_addr.sa.sa_family );
 }
 
@@ -393,7 +408,9 @@ void Connection::send( const std::string& s )
       fprintf( stderr, "Server now detached from client.\n" );
     }
   } else { /* client */
-    if ( ( now - last_port_choice > PORT_HOP_INTERVAL ) && ( now - last_roundtrip_success > PORT_HOP_INTERVAL ) ) {
+
+    // only hop port when MOSH CLIENT's port is not fixed by user request
+    if ( !getenv( "MOSH_CLIENT_PORT" ) && ( now - last_port_choice > PORT_HOP_INTERVAL ) && ( now - last_roundtrip_success > PORT_HOP_INTERVAL ) ) {
       hop_port();
     }
   }
