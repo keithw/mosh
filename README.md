@@ -152,7 +152,7 @@ To start contributing to Mosh, install the following dependencies:
 Debian, Windows Subsystem for Linux:
 
 ```
-$ sudo apt install -y build-essential protobuf-compiler \
+$ sudo apt install -y build-essential autoconf protobuf-compiler \
     libprotobuf-dev pkg-config libutempter-dev zlib1g-dev libncurses5-dev \
     libssl-dev bash-completion tmux less
 ```
