@@ -122,7 +122,7 @@ if which -s pkgbuild; then
     mkdir -p Resources/en.lproj
     cp -p copying.rtf Resources/en.lproj/License
     cp -p readme.rtf Resources/en.lproj/Readme
-    pkgbuild --root "$PREFIX" --identifier $PKGID $PKGID
+    pkgbuild --root "$PREFIX" --version "${PACKAGE_VERSION}" --identifier $PKGID $PKGID
     productbuild --distribution Distribution \
 		 --resources Resources \
 		 --package-path . \
