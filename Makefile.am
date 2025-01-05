@@ -69,7 +69,7 @@ cov-build:
 # with illegal UTF-8 that make Bear unhappy.
 compile_commands.json:
 	$(MAKE) clean
-	bear $(MAKE) check TESTS=
+	bear -- $(MAKE) check TESTS=
 oclint: compile_commands.json
 	$(OCLINT_JCD) -e src/protobufs -- $(OCLINT_OPTIONS)
 
